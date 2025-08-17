@@ -24,8 +24,8 @@
     "keybindings": [
       {
         "command": "easy-key-plotter.plotSelection",
-        "key": "ctrl+shift+p",
-        "mac": "cmd+shift+p",
+        "key": "ctrl+shift+[",
+        "mac": "cmd+shift+[",
         "when": "editorTextFocus"
       }
     ],
