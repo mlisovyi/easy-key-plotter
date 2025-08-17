@@ -34,7 +34,7 @@
       "properties": {
         "easyKeyPlotter.pythonPath": {
           "type": "string",
-          "default": "${workspaceFolder}/.venv/bin/python",
+          "default": "${config:python.defaultInterpreterPath}",
           "description": "Path to Python executable"
         }
       }
