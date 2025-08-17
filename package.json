@@ -14,10 +14,28 @@
   "contributes": {
     "commands": [
       {
-        "command": "easy-key-plotter.helloWorld",
-        "title": "Hello World"
+        "command": "easy-key-plotter.plotSelection",
+        "title": "Plot Selected EASY Key"
       }
-    ]
+    ],
+    "keybindings": [
+      {
+        "command": "easy-key-plotter.plotSelection",
+        "key": "ctrl+shift+p",
+        "mac": "cmd+shift+p",
+        "when": "editorTextFocus"
+      }
+    ],
+    "configuration": {
+      "title": "EASY Key Plotter",
+      "properties": {
+        "easyKeyPlotter.pythonPath": {
+          "type": "string",
+          "default": "${workspaceFolder}/.venv/bin/python",
+          "description": "Path to Python executable"
+      }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
