@@ -1,26 +1,72 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import { exec } from 'child_process';
+import * as path from 'path';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+    let disposable = vscode.commands.registerCommand('easy-key-plotter.plotSelection', async () => {
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) {
+            vscode.window.showErrorMessage('No active editor');
+            return;
+        }
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "easy-key-plotter" is now active!');
+        const selection = editor.selection;
+        const selectedText = editor.document.getText(selection);
+        
+        if (!selectedText) {
+            vscode.window.showErrorMessage('No text selected');
+            return;
+        }
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('easy-key-plotter.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from easy-key-plotter!');
-	});
+        // Get configuration
+        // const config = vscode.workspace.getConfiguration('easyKeyPlotter');
+        // let pythonPath = config.get<string>('pythonPath', 'python');
+        // // Resolve VSCode variables
+        // pythonPath = resolveVariables(pythonPath);
+        const pythonPath = await getPythonPath();
+        // // Path to your Python script
+        const pythonScript = path.join(context.extensionPath, 'src', 'plotter.py');
+        
+        // Execute Python script with selected text as argument
+        const command = `"${pythonPath}" "${pythonScript}" "${selectedText.replace(/"/g, '\\"')}"`;
+        
+        exec(command, (error, stdout, stderr) => {
+            if (stdout) {
+                vscode.window.showErrorMessage(`Error: ${stdout}`);
+                return;
+            }
+            if (error) {
+                vscode.window.showErrorMessage(`Error: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                vscode.window.showErrorMessage(`Python Error: ${stderr}`);
+                return;
+            }
+            vscode.window.showInformationMessage('Plot generated successfully!');
+        });
+    });
 
-	context.subscriptions.push(disposable);
+    context.subscriptions.push(disposable);
 }
 
-// This method is called when your extension is deactivated
-export function deactivate() {}
+async function getPythonPath(): Promise<string> {
+    try {
+        const pythonExtension = vscode.extensions.getExtension('ms-python.python');
+        if (pythonExtension) {
+            if (!pythonExtension.isActive) {
+                await pythonExtension.activate();
+            }
+            
+            const pythonPath = pythonExtension.exports.settings.getExecutionDetails?.().execCommand?.[0];
+            if (pythonPath) {
+                return pythonPath;
+            }
+        }
+    } catch (error) {
+        console.log('Could not get Python path from extension:', error);
+    }
+    
+    // Fallback to  default
+    return "python"
+}
