@@ -32,10 +32,10 @@
     "configuration": {
       "title": "EASY Key Plotter",
       "properties": {
-        "easyKeyPlotter.pythonPath": {
+        "easyKeyPlotter.pythonCode": {
           "type": "string",
-          "default": "${config:python.defaultInterpreterPath}",
-          "description": "Path to Python executable"
+          "default": "import snb_easy_key_plotter; snb_easy_key_plotter.plot(SELECTION)",
+          "description": "The code to execute"
         }
       }
     }
