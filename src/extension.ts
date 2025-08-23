@@ -11,7 +11,7 @@ export function activate(context: vscode.ExtensionContext) {
         const config = vscode.workspace.getConfiguration('easyKeyPlotter');
         const pythonCode = config.get<string>('pythonCode', '');
         console.log(`Using Python code: ${pythonCode.trim()}`);
-        const fullPythonCode = `SELECTION = ${selectedText}\n${pythonCode}`;
+        const fullPythonCode = `SELECTION = "${selectedText}"\n${pythonCode}`;
         console.log(fullPythonCode);
 
         // Send to Python Interactive window
