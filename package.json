@@ -1,6 +1,6 @@
 {
   "name": "easy-key-plotter",
-  "displayName": "easy-key-plotter",
+  "displayName": "Plot EASY key",
   "description": "Plot timeseries from EASY-R",
   "version": "0.0.1",
   "repository": {
